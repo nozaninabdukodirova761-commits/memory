@@ -1,0 +1,197 @@
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Teacher Khurshid's Museum</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{height:100%;overflow:hidden;font-family:Georgia,'Times New Roman',serif;background:#07070f;color:#f4e9d0;touch-action:none}
+#login{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 20%,#3a1c6e,#0a0a1a 70%);padding:20px}
+.card{background:#ffffff0d;border:1px solid #e8c46a66;backdrop-filter:blur(10px);padding:30px;border-radius:26px;text-align:center;max-width:380px;width:100%;box-shadow:0 0 60px #8b5cf655}
+.card .logo{width:76px;height:76px;object-fit:contain;border-radius:50%;background:#fff;margin-bottom:6px}
+.card h1{font-size:25px;margin:8px 0 4px;color:#e8c46a;letter-spacing:1px;font-weight:normal}
+.card p{opacity:.8;font-size:14px}
+.card input{width:100%;padding:13px;border-radius:14px;border:1px solid #e8c46a88;background:#0006;color:#fff;font-size:17px;margin:14px 0 4px;text-align:center;outline:none;user-select:text}
+button{cursor:pointer;border:0;border-radius:14px;font-weight:bold;font-size:17px;padding:12px 28px;color:#1a1020;background:linear-gradient(135deg,#f5d77a,#e8a94a);font-family:inherit}
+#err{color:#ff7b9c;height:20px;font-size:13px;margin-bottom:6px}
+#museum{display:none;position:fixed;inset:0}
+#top{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:10px;padding:7px 14px;background:#000b;border-bottom:1px solid #e8c46a33}
+#top img{width:32px;height:32px;border-radius:50%;object-fit:contain;background:#fff}
+#top b{flex:1;font-size:14px;color:#e8c46a;font-weight:normal;letter-spacing:2px}
+#map{display:flex;gap:5px}
+#map i{width:9px;height:9px;border-radius:50%;background:#fff4;display:block}
+#map i.on{background:#f5d77a;box-shadow:0 0 8px #f5d77a;transform:scale(1.3)}
+#world{position:absolute;top:0;bottom:0;left:0;display:flex}
+.room{flex:none;height:100%;position:relative;overflow:hidden}
+.wall{position:absolute;top:0;left:0;right:0;height:66%;padding-top:46px;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 45%,var(--a),transparent 72%),linear-gradient(#08080f,var(--b))}
+.wall:after{content:"";position:absolute;left:0;right:0;bottom:0;height:9%;background:linear-gradient(#0008,#000c);border-top:3px solid #e8c46a88}
+.spot{position:absolute;top:0;left:15%;width:70%;height:100%;background:linear-gradient(#ffffff22,transparent 85%);clip-path:polygon(43% 0,57% 0,100% 100%,0 100%);pointer-events:none}
+.sconce{position:absolute;top:36%;width:9px;height:26px;border-radius:5px 5px 12px 12px;background:#f5d77a;box-shadow:0 0 30px 14px #f5d77a44}
+.pil{position:absolute;top:0;bottom:0;width:clamp(10px,2vw,22px);background:linear-gradient(90deg,#000b,#e8c46a44,#000b);z-index:2}
+.art{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:12px}
+.frame{padding:9px;background:linear-gradient(135deg,#f7e08c,#b8862b 50%,#f3d06e);border-radius:3px;box-shadow:0 0 50px var(--a),0 14px 30px #000c;cursor:zoom-in}
+.mat{padding:9px;background:#efe8d8;box-shadow:inset 0 0 0 1px #0003}
+.mat img{display:block;max-height:34vh;max-width:min(70vw,520px);background:#222}
+.ph{width:190px;height:250px;display:flex;align-items:center;justify-content:center;background:#222;color:#999;font-size:13px}
+.plaque{background:#000a;border:1px solid #e8c46a88;padding:10px 16px;text-align:center;max-width:min(86vw,430px);border-radius:4px}
+.plaque small{color:#e8c46a;letter-spacing:3px;font-size:11px;display:block}
+.plaque b{display:block;color:#e8c46a;font-weight:normal;font-size:clamp(16px,2.4vw,22px);margin:2px 0 6px}
+.plaque i{font-size:clamp(12px,1.8vw,15px);line-height:1.45}
+.zoom{font-size:11px;opacity:.6;margin-top:6px;display:block}
+.floor{position:absolute;left:0;right:0;bottom:0;height:34%;background:linear-gradient(#000a,#0002 45%,#0005),repeating-linear-gradient(90deg,#0004 0 2px,transparent 2px 130px),repeating-linear-gradient(0deg,#0003 0 2px,transparent 2px 36px),#6b4426}
+.rug{position:absolute;left:50%;top:20%;transform:translateX(-50%);width:min(70%,540px);height:56%;background:var(--a);border:4px double #e8c46a;border-radius:6px;opacity:.85;display:flex;align-items:center;justify-content:center}
+.rug img{max-height:78%;max-width:40%;object-fit:contain;border-radius:50%;background:#fff}
+.bench{position:absolute;left:50%;top:4%;transform:translateX(-50%);width:min(36vw,190px);height:14px;background:#3a2418;border-radius:4px;box-shadow:0 14px 0 -5px #0006}
+#peng{position:absolute;z-index:5;transform-origin:50% 100%}
+#peng svg{width:100%;display:block;overflow:visible;filter:drop-shadow(0 8px 6px #000a)}
+#pb{transform-origin:50% 100%}
+#peng.walk #pb{animation:bob .38s infinite}
+@keyframes bob{50%{transform:translateY(-6px) rotate(3deg)}}
+#peng.walk .fl{animation:step .38s infinite}
+#peng.walk .fr{animation:step .38s infinite .19s}
+@keyframes step{50%{transform:translateY(-6px)}}
+.wv{transform-origin:20px 80px;animation:wave 2.2s ease-in-out infinite}
+@keyframes wave{50%{transform:rotate(-25deg)}}
+#peng.walk .wv{animation:none}
+.eyes{transform-origin:60px 50px;animation:blink 4s infinite}
+@keyframes blink{94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+.beak{transform-origin:60px 58px}
+#peng.talk .beak{animation:talk .22s infinite}
+@keyframes talk{50%{transform:scaleY(1.5)}}
+#bubble{position:absolute;z-index:15;left:50%;transform:translateX(-50%);top:56px;background:#fffffff2;color:#2a1a4a;padding:12px 18px;border-radius:18px;font-size:clamp(13px,2.2vw,17px);width:min(500px,92vw);box-shadow:0 8px 28px #000a,0 0 24px #f5d77a66;display:none;line-height:1.4}
+#bubble:before{content:"🐧 "}
+#joy{position:absolute;z-index:15;left:22px;bottom:24px;width:124px;height:124px;border-radius:50%;background:#ffffff1a;border:2px solid #e8c46a88;touch-action:none}
+#knob{position:absolute;left:32px;top:32px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#f5d77a,#e8a94a);box-shadow:0 0 18px #e8c46a99}
+#hint{position:absolute;z-index:14;bottom:160px;left:22px;font-size:12px;opacity:.9;text-shadow:0 2px 6px #000;width:220px}
+#viewer{display:none;position:fixed;inset:0;z-index:60;background:#05050cf5;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px}
+#vimg{max-width:94vw;max-height:74vh;border:8px solid #e8c46a;border-radius:3px;box-shadow:0 0 60px #e8c46a44;object-fit:contain;color:#e8c46a}
+#vt{color:#e8c46a;letter-spacing:3px;text-transform:uppercase;font-size:clamp(14px,2.5vw,20px)}
+#vcap{max-width:min(640px,92vw);text-align:center;font-style:italic;font-size:clamp(13px,2.2vw,18px);line-height:1.5}
+#vx{position:absolute;top:14px;right:14px;padding:8px 16px}
+@media(orientation:landscape){.art{flex-direction:row;gap:26px}.mat img{max-height:38vh}.plaque{max-width:260px}}
+.letter{background:#f6efdc;color:#3a2a1a;padding:20px 26px;max-width:min(90vw,580px);border:6px double #b8862b;border-radius:4px;box-shadow:0 0 50px var(--a),0 14px 30px #000c;font-style:italic;line-height:1.6;font-size:clamp(11px,1.75vh,15px);cursor:zoom-in}
+.nm{font-size:1.6em;color:#8a3a2a;font-family:'Brush Script MT','Segoe Script',cursive;font-style:normal}
+.sig{text-align:right;margin-top:12px;color:#8a5a1a}
+@media(orientation:landscape){.letter{max-width:86vw;padding:12px 20px;font-size:clamp(10px,2.9vh,14px);line-height:1.45}}
+</style>
+</head>
+<body>
+<div id="login"><div class="card">
+  <img class="logo" src="logo.png" alt="" onerror="this.style.display='none'">
+  <h1>Teacher Khurshid's Museum</h1><p>A little place made just for you</p>
+  <input id="pw" type="password" placeholder="Password" autocomplete="off">
+  <div id="err"></div><button onclick="enter()">Enter ✨</button>
+</div></div>
+
+<div id="museum">
+  <div id="top"><img src="logo.png" alt="" onerror="this.style.display='none'"><b>TEACHER KHURSHID'S MUSEUM</b><div id="map"></div></div>
+  <div id="world">
+    <div id="peng"><div id="pb">
+<svg viewBox="0 0 120 140">
+ <g class="fl"><ellipse cx="42" cy="132" rx="15" ry="6" fill="#ffa43a"/></g><g class="fr"><ellipse cx="78" cy="132" rx="15" ry="6" fill="#ffa43a"/></g>
+ <ellipse cx="60" cy="90" rx="38" ry="42" fill="#1e2347"/><ellipse cx="60" cy="98" rx="26" ry="32" fill="#fff"/>
+ <g class="wv"><ellipse cx="18" cy="92" rx="8" ry="20" transform="rotate(14 18 92)" fill="#1e2347"/></g>
+ <ellipse cx="102" cy="92" rx="8" ry="20" transform="rotate(-14 102 92)" fill="#1e2347"/>
+ <ellipse cx="60" cy="52" rx="42" ry="38" fill="#1e2347"/>
+ <path d="M60 40 C48 28 22 40 26 58 C30 76 52 80 60 74 C68 80 90 76 94 58 C98 40 72 28 60 40Z" fill="#fff"/>
+ <g class="eyes"><circle cx="45" cy="54" r="9" fill="#111"/><circle cx="75" cy="54" r="9" fill="#111"/><circle cx="48" cy="50" r="3.6" fill="#fff"/><circle cx="78" cy="50" r="3.6" fill="#fff"/><circle cx="42" cy="58" r="1.6" fill="#fff"/><circle cx="72" cy="58" r="1.6" fill="#fff"/></g>
+ <ellipse cx="33" cy="66" rx="7" ry="4" fill="#ff7aa2" opacity=".75"/><ellipse cx="87" cy="66" rx="7" ry="4" fill="#ff7aa2" opacity=".75"/>
+ <g class="beak"><path d="M52 62 Q60 57 68 62 Q60 74 52 62Z" fill="#ffa43a"/></g>
+ <path d="M48 83 L60 90 L48 98Z M72 83 L60 90 L72 98Z" fill="#e8c46a"/><circle cx="60" cy="90" r="4" fill="#c9962f"/>
+</svg></div></div>
+  </div>
+  <div id="bubble"></div>
+  <div id="hint">Drag the joystick (or W A S D / arrows) to walk anywhere. Tap a painting to see it up close.</div>
+  <div id="joy"><div id="knob"></div></div>
+</div>
+
+<div id="viewer"><button id="vx" onclick="closeView()">✕</button><div id="vt"></div><img id="vimg" alt="photo not found"><div id="vcap"></div><div id="vl" class="letter" style="display:none;cursor:default;max-width:min(92vw,620px);font-size:clamp(14px,2.4vw,19px);max-height:84vh;overflow:auto;touch-action:pan-y"></div></div>
+
+<script>
+// ===== SETTINGS =====
+const SALT="nz-museum-",PW_SHA="519e9132a5f31c5d924eadb41013f1d1af76f707301711a6da7cccebf1d693a1",PW_FB="159dd426cf025e";   // password is stored as a hash, not as plain text
+const WELCOME="Hello, Teacher Khurshid! Welcome. I have been waiting for you. Please walk with me. I made this museum just for you.";
+// Put photo1.jpg ... photo8.jpg and logo.png in the same folder as index.html (e.g. on GitHub)
+const ROOMS=[
+ {t:"The Beginning",a:"#5b2a86",b:"#120a22",m:"Every beautiful story starts with a teacher who believed in us. Thank you for believing in me."},
+ {t:"The Hall of Patience",a:"#0f4c75",b:"#07121f",m:"Thank you for every time you explained it once more, and never made us feel small."},
+ {t:"The Gallery of Words",a:"#7a2e4d",b:"#1a0912",m:"You did not only teach us English. You gave us a new way to dream."},
+ {t:"The Room of Light",a:"#8a6a12",b:"#1a1405",m:"Some people give lessons. You light the way, and we found our path because of you."},
+ {t:"The Hall of Courage",a:"#1e6b5a",b:"#06140f",m:"Because of you, we learned that mistakes are not the end. They are just steps forward."},
+ {t:"The Night Sky",a:"#2b2f8f",b:"#07081f",m:"Like the stars, you guide us even when we do not notice. You are always there."},
+ {t:"The Hall of Memories",a:"#8a3a2a",b:"#1a0b08",m:"Years will pass, but we will always remember your kindness, your smile and your voice."},
+ {t:"The Golden Hall",a:"#9a7418",b:"#1a1306",m:"You are not just our teacher. You are our inspiration. Thank you, Teacher Khurshid, from all our hearts."},
+ {t:"A Thank You Letter",a:"#7a2e4d",b:"#16080f",letter:true,m:"And now, a few words from the heart, just for you, Teacher Khurshid.",
+  text:"<b>Dear Teacher Khurshid,</b><br><br>Thank you, from the bottom of my heart. Thank you for your patience, for your gentle words, and for every moment you gave me. You taught me English, but you also taught me to believe in myself. Whatever I achieve in life, a part of it will always belong to you.<br><br>I wish you health, happiness, and a life as warm and bright as the light you gave me. May every door you open lead to something beautiful, and may all the kindness you gave to others return to you a hundred times over. You are one of the kindest people I have ever met, and I will carry your words with me wherever I go.<br><br>You will always be my favorite teacher. 🤍"}
+];
+const SIGNATURE="Nozanin";   // your name under the letter
+const SIG=`<div class="sig">With all my love and endless gratitude,<br>Your student<br><span class="nm">${SIGNATURE} 🤍</span></div>`;
+// ====================
+const N=ROOMS.length,$=id=>document.getElementById(id);
+const world=$('world'),peng=$('peng'),bubble=$('bubble'),mapEl=$('map');
+let RW,H,pw,px,fy=.5,fx=1,cam=0,lastRoom=-1,talk=false,ready=false,typeT,hideT,last=0;
+const key={},joy={x:0,y:0};
+
+function build(){
+  ROOMS.forEach((r,i)=>{
+    const d=document.createElement('div');d.className='room';d.style.setProperty('--a',r.a);d.style.setProperty('--b',r.b);
+    d.innerHTML=`<div class="wall"><div class="spot"></div><div class="sconce" style="left:7%"></div><div class="sconce" style="right:7%"></div>
+      <div class="art"><div class="frame" onclick="openView(${i})"><div class="mat"><img src="photo${i+1}.jpg" alt="" onerror="this.outerHTML='<div class=ph>photo${i+1}.jpg</div>'"></div></div>
+      <div class="plaque"><small>ROOM ${i+1}</small><b>${r.t}</b><i>${r.m}</i><span class="zoom">tap the painting to enlarge</span></div></div></div>
+      <div class="floor"><div class="rug"><img src="logo.png" alt="" onerror="this.style.display='none'"></div><div class="bench"></div></div>
+      <div class="pil" style="left:0"></div><div class="pil" style="right:0"></div>`;
+    if(r.letter)d.querySelector('.art').innerHTML=`<div class="letter" onclick="openLetter()">${r.text}${SIG}</div>`;
+    world.insertBefore(d,peng);mapEl.insertAdjacentHTML('beforeend','<i></i>');
+  });
+}
+function layout(){
+  RW=innerWidth;H=innerHeight;pw=Math.max(56,Math.min(112,Math.min(RW,H)*.2));peng.style.width=pw+'px';
+  document.querySelectorAll('.room').forEach(r=>r.style.width=RW+'px');world.style.width=RW*N+'px';
+  if(px==null)px=RW*.5;px=Math.min(px,RW*N-60);
+}
+addEventListener('resize',layout);
+
+function say(t){
+  clearInterval(typeT);clearTimeout(hideT);bubble.textContent='';bubble.style.display='block';talk=true;let i=0;
+  typeT=setInterval(()=>{bubble.textContent=t.slice(0,++i);if(i>=t.length){clearInterval(typeT);talk=false;hideT=setTimeout(()=>bubble.style.display='none',6000)}},34);
+}
+function openLetter(){const L=ROOMS[N-1];$('vl').innerHTML=L.text+SIG;$('vl').style.display='block';$('vimg').style.display=$('vt').style.display=$('vcap').style.display='none';$('viewer').style.display='flex'}
+function openView(i){$('vl').style.display='none';$('vimg').style.display=$('vt').style.display=$('vcap').style.display='';$('vimg').src=`photo${i+1}.jpg`;$('vt').textContent=ROOMS[i].t;$('vcap').textContent=ROOMS[i].m;$('viewer').style.display='flex'}
+function closeView(){$('viewer').style.display='none'}
+
+function loop(t){
+  requestAnimationFrame(loop);const dt=Math.min((t-last)/1000||0,.05);last=t;
+  let ix=(key.d||key.ArrowRight?1:0)-(key.a||key.ArrowLeft?1:0),iy=(key.s||key.ArrowDown?1:0)-(key.w||key.ArrowUp?1:0);
+  if(!ix&&!iy){ix=joy.x;iy=joy.y}
+  const l=Math.hypot(ix,iy),mv=l>.08;
+  if(mv){const k=Math.min(l,1)/l;px+=ix*k*Math.max(240,RW*.3)*dt;fy+=iy*k*.7*dt;if(ix)fx=ix<0?-1:1}
+  px=Math.max(50,Math.min(RW*N-50,px));fy=Math.max(0,Math.min(1,fy));
+  const floorH=H*.34,foot=H*.66+floorH*(.16+.8*fy),s=.76+.36*fy,ph=pw*140/120;
+  peng.style.left=(px-pw/2)+'px';peng.style.top=(foot-ph)+'px';peng.style.transform=`scale(${fx*s},${s})`;
+  peng.classList.toggle('walk',mv);peng.classList.toggle('talk',talk);
+  const tg=Math.max(0,Math.min(RW*(N-1),px-RW/2));cam+=(tg-cam)*.12;world.style.transform=`translateX(${-cam}px)`;
+  const rm=Math.min(N-1,Math.floor(px/RW));
+  if(rm!==lastRoom){lastRoom=rm;[...mapEl.children].forEach((c,i)=>c.classList.toggle('on',i===rm));if(ready)say(ROOMS[rm].m)}
+}
+addEventListener('keydown',e=>{if(e.key==='Escape')closeView();key[e.key.length===1?e.key.toLowerCase():e.key]=true;$('hint').style.display='none'});
+addEventListener('keyup',e=>{key[e.key.length===1?e.key.toLowerCase():e.key]=false});
+const jz=$('joy'),kn=$('knob');
+function jm(e){const r=jz.getBoundingClientRect();let dx=e.clientX-(r.left+62),dy=e.clientY-(r.top+62);const l=Math.hypot(dx,dy),m=48;if(l>m){dx*=m/l;dy*=m/l}kn.style.transform=`translate(${dx}px,${dy}px)`;joy.x=dx/m;joy.y=dy/m}
+function jr(){joy.x=joy.y=0;kn.style.transform=''}
+jz.addEventListener('pointerdown',e=>{jz.setPointerCapture(e.pointerId);jm(e);$('hint').style.display='none'});
+jz.addEventListener('pointermove',e=>{if(e.buttons||e.pointerType==='touch')jm(e)});
+['pointerup','pointercancel'].forEach(ev=>jz.addEventListener(ev,jr));
+
+function cyrb53(str,seed=0){let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(let i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677)}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return(4294967296*(2097151&h2)+(h1>>>0)).toString(16)}
+async function hashPw(p){const t=SALT+p.trim().toLowerCase();if(window.crypto&&crypto.subtle){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){}}return cyrb53(t)}
+async function enter(){
+  const h=await hashPw($('pw').value);
+  if(h!==PW_SHA&&h!==PW_FB){$('err').textContent='Oops, that is not it. Try again 🐧';return}
+  $('login').style.display='none';$('museum').style.display='block';
+  build();layout();requestAnimationFrame(loop);setTimeout(()=>{ready=true;say(WELCOME)},500);
+}
+$('pw').addEventListener('keydown',e=>{if(e.key==='Enter')enter()});
+</script>
+</body>
+</html>
